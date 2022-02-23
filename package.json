@@ -1,0 +1,15 @@
+{
+  "name": "restructure",
+  "version": "1.0.0",
+  "description": "",
+  "main": "restructure.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "AJ ONeal <aj@therootcompany.com> (https://therootcompany.com/)",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "@root/walk": "^1.1.0"
+  }
+}

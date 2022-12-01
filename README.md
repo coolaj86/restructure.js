@@ -28,6 +28,10 @@ WhateverItIs.doSomeStuff().then(WhateverItIs.doMoreThings);
 ## Usage
 
 ```bash
+git clone git@github.com:coolaj86/restructure.js.git ./de-destructure/
+pushd ./de-destructure/
+npm ci
+
 node ./restructure.js ~/path/to/project/source/
 ```
 

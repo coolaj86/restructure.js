@@ -45,7 +45,9 @@ ModuleMap.save = async function (abspath, name) {
 
 async function main() {
     let rootname;
-    let dirs = process.argv.slice(2);
+    let args = process.argv.slice(2);
+    let pathsOnly = removeFlag(args, ["--paths-only"]);
+    let dirs = args;
     if (!dirs.length) {
         dirs.push("./");
     }
@@ -81,7 +83,7 @@ async function main() {
         let script = await Fs.readFile(pathname, "utf8");
         let kb = (script.length / 1024).toFixed(2).padStart(5, " ");
 
-        let results = await parse(script, shortname, rootname);
+        let results = await parse(script, shortname, rootname, { pathsOnly });
         if (
             Object.keys(results.warnings).length ||
             Object.keys(results.multiImporters).length
@@ -195,7 +197,31 @@ async function main() {
     console.log();
 }
 
-async function parse(script, shortname, rootname) {
+/**
+ * @param {Array<String>} arr
+ * @param {Array<String>} aliases
+ * @returns {String?}
+ */
+function removeFlag(arr, aliases) {
+    /** @type {String?} */
+    let arg = null;
+    aliases.forEach(function (item) {
+        let index = arr.indexOf(item);
+        if (-1 === index) {
+            return null;
+        }
+
+        if (arg) {
+            throw Error(`duplicate flag ${item}`);
+        }
+
+        arg = arr.splice(index, 1)[0];
+    });
+
+    return arg;
+}
+
+async function parse(script, shortname, rootname, opts) {
     /*
      * Example:
      *   let script = `
@@ -265,6 +291,10 @@ async function parse(script, shortname, rootname) {
         let assignments;
 
         if (destructured) {
+            if (opts?.pathsOnly) {
+                continue;
+            }
+
             // '{ foo, bar, }' => [ "foo", "bar" ]
             assignments = destructured[1]
                 .replace(/,/g, " ")
